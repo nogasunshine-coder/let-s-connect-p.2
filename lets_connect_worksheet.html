@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Let's Connect! – Family Unit</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fef9f0;
+  --text: #2d2d2d;
+  --muted: #777;
+  --border: #e8dece;
+  --correct: #43a047;
+  --wrong: #e53935;
+  --c1: #e07b39; --c1l: #fff3e0;
+  --c2: #43a047; --c2l: #e8f5e9;
+  --c3: #e91e63; --c3l: #fce4ec;
+  --c4: #1976d2; --c4l: #e3f2fd;
+  --c5: #9c27b0; --c5l: #f3e5f5;
+  --cw: #795548; --cwl: #efebe9;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text); }
+
+.header {
+  background: linear-gradient(135deg, #e07b39, #f5a96b 60%, #ffc47e);
+  padding: 28px 20px 22px; text-align: center; position: relative; overflow: hidden;
+}
+.header::before { content:''; position:absolute; top:-30px; right:-30px; width:130px; height:130px; background:rgba(255,255,255,0.12); border-radius:50%; }
+.header h1 { font-family:'Nunito',sans-serif; font-size:2rem; font-weight:900; color:white; text-shadow:0 2px 8px rgba(0,0,0,0.15); position:relative; z-index:1; }
+.header p { color:rgba(255,255,255,0.88); font-size:0.95rem; margin-top:5px; font-weight:600; position:relative; z-index:1; }
+
+.score-bar { background:white; border-bottom:2px solid var(--border); padding:10px 20px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.score-display { display:flex; align-items:center; gap:8px; font-weight:700; font-size:0.97rem; }
+.score-badge { background:var(--c1); color:white; padding:4px 14px; border-radius:20px; font-size:0.97rem; font-weight:800; font-family:'Nunito',sans-serif; min-width:72px; text-align:center; }
+.btns { display:flex; gap:8px; flex-wrap:wrap; }
+.check-btn { background:linear-gradient(135deg,#e07b39,#f5a96b); color:white; border:none; padding:8px 20px; border-radius:22px; font-size:0.93rem; font-weight:700; cursor:pointer; font-family:'Quicksand',sans-serif; box-shadow:0 3px 10px rgba(224,123,57,0.3); transition:transform 0.15s; }
+.check-btn:hover { transform:translateY(-1px); }
+.reset-btn { background:white; color:var(--muted); border:2px solid var(--border); padding:6px 16px; border-radius:22px; font-size:0.85rem; font-weight:600; cursor:pointer; font-family:'Quicksand',sans-serif; }
+.reset-btn:hover { border-color:#aaa; color:var(--text); }
+
+.tabs { background:white; border-bottom:2px solid var(--border); padding:0 16px; display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
+.tabs::-webkit-scrollbar { display:none; }
+.tab-btn { padding:13px 14px; border:none; background:transparent; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.85rem; color:var(--muted); border-bottom:3px solid transparent; transition:color 0.2s,border-color 0.2s; white-space:nowrap; display:flex; align-items:center; gap:5px; }
+.tab-score { background:#eee; color:#999; padding:2px 7px; border-radius:10px; font-size:0.75rem; font-weight:700; transition:background 0.2s,color 0.2s; }
+.tab-btn.active { color:var(--tc); border-bottom-color:var(--tc); }
+.tab-btn.active .tab-score { background:var(--tc); color:white; }
+
+.content { padding:20px; max-width:820px; margin:0 auto; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+.chunk { border-radius:16px; overflow:hidden; margin-bottom:22px; box-shadow:0 2px 12px rgba(0,0,0,0.06); border:2px solid var(--border); }
+
+.tip-card { padding:18px 18px 16px 52px; position:relative; line-height:1.75; font-size:0.97rem; }
+.tip-num { position:absolute; left:14px; top:16px; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Nunito',sans-serif; font-weight:900; font-size:0.88rem; color:white; }
+.tip-card p + p { margin-top:8px; }
+.tip-note { font-style:italic; color:#555; font-size:0.92rem; }
+
+.chunk-questions { background:white; padding:18px 20px; border-top:2px dashed var(--border); }
+.chunk-questions h4 { font-family:'Nunito',sans-serif; font-weight:800; font-size:0.9rem; color:var(--muted); margin-bottom:14px; letter-spacing:0.04em; text-transform:uppercase; }
+
+.q-item { margin-bottom:16px; }
+.q-item label { display:block; font-weight:600; font-size:0.94rem; margin-bottom:7px; line-height:1.55; }
+.q-num { font-family:'Nunito',sans-serif; font-weight:800; margin-right:3px; }
+
+.answer-input { width:100%; padding:9px 13px; border:2px solid var(--border); border-radius:10px; font-family:'Quicksand',sans-serif; font-size:0.94rem; background:#fafafa; transition:border-color 0.2s,background 0.2s; outline:none; color:var(--text); }
+.answer-input:focus { border-color:#4a90d9; background:white; }
+.answer-input.correct { border-color:var(--correct); background:#f0fff0; }
+.answer-input.wrong   { border-color:var(--wrong);   background:#fff0f0; }
+
+.fill-select { padding:6px 10px; border:2px solid var(--border); border-radius:9px; font-family:'Quicksand',sans-serif; font-size:0.92rem; font-weight:600; background:#fafafa; cursor:pointer; outline:none; transition:border-color 0.2s; min-width:130px; }
+.fill-select:focus { border-color:#4a90d9; }
+.fill-select.correct { border-color:var(--correct); background:#f0fff0; color:#2e7d32; }
+.fill-select.wrong   { border-color:var(--wrong);   background:#fff0f0; color:#c62828; }
+
+.choose-btn { padding:5px 13px; border:2px solid var(--border); border-radius:16px; background:white; font-family:'Quicksand',sans-serif; font-weight:700; font-size:0.91rem; cursor:pointer; transition:all 0.15s; display:inline-block; margin:0 2px; }
+.choose-btn:hover { border-color:#4a90d9; color:#4a90d9; }
+.choose-btn.selected  { background:#4a90d9; color:white; border-color:#4a90d9; }
+.choose-btn.correct   { background:var(--correct); color:white; border-color:var(--correct); }
+.choose-btn.wrong     { background:var(--wrong);   color:white; border-color:var(--wrong); }
+.choose-btn.show-ans  { background:#f0fff0; color:var(--correct); border-color:var(--correct); font-weight:800; }
+
+.options-list { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+.option-label { display:flex; align-items:center; gap:8px; padding:8px 14px; border:2px solid var(--border); border-radius:10px; cursor:pointer; font-size:0.93rem; font-weight:600; transition:border-color 0.2s,background 0.2s; background:#fafafa; }
+.option-label:hover { border-color:#4a90d9; background:white; }
+.option-label.correct  { border-color:var(--correct); background:#f0fff0; }
+.option-label.wrong    { border-color:var(--wrong);   background:#fff0f0; }
+.option-label.show-ans { border-color:var(--correct); background:#f0fff0; font-weight:700; }
+
+.feedback { font-size:0.8rem; font-weight:700; margin-top:5px; padding:3px 9px; border-radius:6px; display:inline-block; }
+.feedback.correct { background:#e8f5e9; color:#2e7d32; }
+.feedback.wrong   { background:#ffebee; color:#c62828; }
+
+.word-bank-box { background:var(--cwl); border:2px solid #d7ccc8; border-radius:10px; padding:11px 14px; margin-bottom:14px; font-size:0.88rem; }
+.word-bank-box strong { font-family:'Nunito',sans-serif; display:block; margin-bottom:6px; color:var(--cw); }
+.chips { display:flex; flex-wrap:wrap; gap:5px; }
+.chip { padding:3px 11px; background:white; border:2px solid #bcaaa4; border-radius:13px; font-size:0.85rem; font-weight:600; }
+
+.section-score { background:linear-gradient(135deg,var(--bg),white); border:2px dashed var(--border); border-radius:10px; padding:11px 16px; text-align:center; font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; color:var(--muted); margin-top:4px; }
+.section-score.graded { border-style:solid; }
+.big { font-size:1.4rem; }
+
+.example-box { background:#f0f7ff; border:2px solid #bbdefb; border-radius:10px; padding:12px 15px; margin-bottom:16px; font-size:0.92rem; }
+
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:200; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+.modal-overlay.show { opacity:1; pointer-events:all; }
+.modal { background:white; border-radius:20px; padding:32px 36px; max-width:440px; width:92%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.2); transform:translateY(16px); transition:transform 0.3s; }
+.modal-overlay.show .modal { transform:translateY(0); }
+.modal .moji { font-size:3.2rem; margin-bottom:10px; }
+.modal h2 { font-family:'Nunito',sans-serif; font-size:1.7rem; font-weight:900; margin-bottom:6px; }
+.total-num { font-size:2.8rem; font-weight:900; font-family:'Nunito',sans-serif; color:var(--c1); margin:10px 0; }
+.modal p { color:var(--muted); font-size:0.97rem; margin-bottom:18px; }
+.modal-close { background:var(--c1); color:white; border:none; padding:11px 28px; border-radius:22px; font-size:0.97rem; font-weight:700; cursor:pointer; font-family:'Quicksand',sans-serif; }
+.breakdown { display:flex; flex-direction:column; gap:7px; margin:14px 0; text-align:left; }
+.b-row { display:flex; justify-content:space-between; align-items:center; padding:7px 12px; border-radius:8px; font-size:0.9rem; font-weight:600; }
+.b-row span:last-child { font-family:'Nunito',sans-serif; font-weight:800; }
+
+@media(max-width:600px){
+  .header h1{font-size:1.5rem;}
+  .content{padding:14px;}
+  .modal{padding:22px 18px;}
+  .tab-btn{font-size:0.78rem;padding:11px 10px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏠 Let's Connect!</h1>
+  <p>Family Unit – Interactive Worksheet</p>
+</div>
+
+<div class="score-bar">
+  <div class="score-display">
+    <span>Score:</span>
+    <span class="score-badge" id="totalScore">–</span>
+  </div>
+  <div class="btns">
+    <button class="reset-btn" onclick="resetAll()">🔄 Reset</button>
+    <button class="check-btn" onclick="checkAll()">✅ Check All &amp; See Score</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" style="--tc:#e07b39" onclick="switchTab(0)">💬 Tip 1 <span class="tab-score" id="ts0">–</span></button>
+  <button class="tab-btn" style="--tc:#43a047" onclick="switchTab(1)">🏃 Tip 2 <span class="tab-score" id="ts1">–</span></button>
+  <button class="tab-btn" style="--tc:#e91e63" onclick="switchTab(2)">🍽️ Tip 3 <span class="tab-score" id="ts2">–</span></button>
+  <button class="tab-btn" style="--tc:#1976d2" onclick="switchTab(3)">🎮 Tip 4 <span class="tab-score" id="ts3">–</span></button>
+  <button class="tab-btn" style="--tc:#9c27b0" onclick="switchTab(4)">💜 Tip 5 <span class="tab-score" id="ts4">–</span></button>
+  <button class="tab-btn" style="--tc:#795548" onclick="switchTab(5)">🔤 Words <span class="tab-score" id="ts5">–</span></button>
+  <button class="tab-btn" style="--tc:#546e7a" onclick="switchTab(6)">✏️ Writing <span class="tab-score" id="ts6">–</span></button>
+</div>
+
+<div class="content">
+
+<!-- TIP 1 -->
+<div class="tab-panel active" id="panel0">
+  <div class="chunk">
+    <div class="tip-card" style="background:var(--c1l);border-bottom:2px dashed #ffd8b0">
+      <div class="tip-num" style="background:var(--c1)">1</div>
+      <p>Show your family members that you love them. Write to each of them <em>why</em> you love them.</p>
+      <p>For example, <strong>"You always make me laugh and I love you for that,"</strong> or <strong>"I love you because you always support me when the others don't."</strong></p>
+      <p>You can send this as a text message or as a note that you put under their pillow. This will bring a smile to their faces.</p>
+    </div>
+    <div class="chunk-questions">
+      <h4>📝 Questions – Tip 1</h4>
+
+      <div class="q-item">
+        <label><span class="q-num">1.</span> Find THREE words in Tip 1 which mean: <em>גורם/גורמת לי לצחוק</em></label>
+        <input type="text" class="answer-input" data-id="a1" data-ans="make me laugh" placeholder="Write 3 words from Tip 1...">
+        <div class="feedback" id="fb-a1" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">2.</span> Find a sentence in Tip 1 which means: <em>זה יעלה חיוך על פניהם.</em></label>
+        <input type="text" class="answer-input" data-id="a2" data-ans="This will bring a smile to their faces." placeholder="Copy the sentence from Tip 1...">
+        <div class="feedback" id="fb-a2" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">3.</span> Choose the correct word:<br>
+          <span style="line-height:2.5;display:block;margin-top:4px">
+            <button class="choose-btn" data-group="b1" data-val="Know" onclick="pick(this)">Know</button>
+            <button class="choose-btn" data-group="b1" data-val="Show" onclick="pick(this)">Show</button>
+            &nbsp;your family members&nbsp;
+            <button class="choose-btn" data-group="b1b" data-val="that" onclick="pick(this)">that</button>
+            <button class="choose-btn" data-group="b1b" data-val="if" onclick="pick(this)">if</button>
+            &nbsp;you love them.
+          </span>
+        </label>
+        <div class="feedback" id="fb-b1" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">4.</span> Choose the correct word:<br>
+          <span style="line-height:2.5;display:block;margin-top:4px">
+            Write to&nbsp;
+            <button class="choose-btn" data-group="b2" data-val="each" onclick="pick(this)">each</button>
+            <button class="choose-btn" data-group="b2" data-val="both" onclick="pick(this)">both</button>
+            &nbsp;of them&nbsp;
+            <button class="choose-btn" data-group="b2b" data-val="when" onclick="pick(this)">when</button>
+            <button class="choose-btn" data-group="b2b" data-val="why" onclick="pick(this)">why</button>
+            &nbsp;you love them.
+          </span>
+        </label>
+        <div class="feedback" id="fb-b2" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">💬 5.</span> Do any of your family members make you laugh? How?</label>
+        <textarea class="answer-input" rows="2" data-id="oty1" placeholder="Write your own answer..." style="resize:vertical"></textarea>
+      </div>
+
+      <div class="section-score" id="score0">Answer the questions above 👆</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIP 2 -->
+<div class="tab-panel" id="panel1">
+  <div class="chunk">
+    <div class="tip-card" style="background:var(--c2l);border-bottom:2px dashed #c8e6c9">
+      <div class="tip-num" style="background:var(--c2)">2</div>
+      <p><strong>Do sports activities together.</strong></p>
+      <p>Choose activities you all like. For example, take a walk or go for a run together. Play ball or exercise at home, in the park, or in a sports club.</p>
+    </div>
+    <div class="chunk-questions">
+      <h4>📝 Questions – Tip 2</h4>
+
+      <div class="q-item">
+        <label><span class="q-num">1.</span> Find a sentence in Tip 2 which means: <em>בחרו פעילויות שכולכם אוהבים.</em></label>
+        <input type="text" class="answer-input" data-id="a3" data-ans="Choose activities you all like." placeholder="Copy the sentence from Tip 2...">
+        <div class="feedback" id="fb-a3" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">2.</span> Find THREE words in Tip 2 which mean: <em>התעמלו בבית.</em></label>
+        <input type="text" class="answer-input" data-id="a4" data-ans="exercise at home" placeholder="Write 3 words from Tip 2...">
+        <div class="feedback" id="fb-a4" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">3.</span> Choose the correct word:<br>
+          <span style="line-height:2.5;display:block;margin-top:4px">
+            <button class="choose-btn" data-group="b3" data-val="Do" onclick="pick(this)">Do</button>
+            <button class="choose-btn" data-group="b3" data-val="Play" onclick="pick(this)">Play</button>
+            &nbsp;sports activities together.
+          </span>
+        </label>
+        <div class="feedback" id="fb-b3" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">4.</span> Choose the correct word:<br>
+          <span style="line-height:2.5;display:block;margin-top:4px">
+            Take a walk or&nbsp;
+            <button class="choose-btn" data-group="b4" data-val="take" onclick="pick(this)">take</button>
+            <button class="choose-btn" data-group="b4" data-val="go" onclick="pick(this)">go</button>
+            &nbsp;for a run.
+          </span>
+        </label>
+        <div class="feedback" id="fb-b4" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">💬 5.</span> Which of the sports activities in Tip 2 do you do with your family?</label>
+        <textarea class="answer-input" rows="2" data-id="oty2" placeholder="Write your own answer..." style="resize:vertical"></textarea>
+      </div>
+
+      <div class="section-score" id="score1">Answer the questions above 👆</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIP 3 -->
+<div class="tab-panel" id="panel2">
+  <div class="chunk">
+    <div class="tip-card" style="background:var(--c3l);border-bottom:2px dashed #f8bbd0">
+      <div class="tip-num" style="background:var(--c3)">3</div>
+      <p><strong>Prepare and eat a meal together.</strong> Family meals connect family members. Many families enjoy having a hot meal in the evening when all family members are at home.</p>
+      <p class="tip-note">(Turn off the TV before sitting down at the dinner table! And no smartphones, please!)</p>
+      <p>Discuss your day. Share your experiences with each other.</p>
+    </div>
+    <div class="chunk-questions">
+      <h4>📝 Questions – Tip 3</h4>
+
+      <div class="q-item">
+        <label><span class="q-num">1.</span> Why is it important to prepare and eat a meal together?</label>
+        <textarea class="answer-input" rows="2" data-id="c1" placeholder="Write your answer..." style="resize:vertical"></textarea>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">2.</span> Find a sentence in Tip 3 which means: <em>ארוחות מקשרות בין בני משפחה.</em></label>
+        <input type="text" class="answer-input" data-id="d1" data-ans="Family meals connect family members." placeholder="Copy the sentence...">
+        <div class="feedback" id="fb-d1" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">3.</span> What TWO rules are mentioned in Tip 3?</label>
+        <p style="margin:6px 0 4px;font-size:0.93rem">Don't use your <input type="text" class="answer-input" data-id="d2" data-ans="smartphones" placeholder="..." style="display:inline-block;width:160px;margin:0 5px;vertical-align:middle"> at the dinner table.</p>
+        <div class="feedback" id="fb-d2" style="display:none"></div>
+        <p style="margin:8px 0 4px;font-size:0.93rem">Turn off the <input type="text" class="answer-input" data-id="d2b" data-ans="TV" placeholder="..." style="display:inline-block;width:90px;margin:0 5px;vertical-align:middle"> before sitting down.</p>
+        <div class="feedback" id="fb-d2b" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">4.</span> Find a sentence in Tip 3 which means: <em>שתפו זה את זה בחוויות שלכם.</em></label>
+        <input type="text" class="answer-input" data-id="d3" data-ans="Share your experiences with each other." placeholder="Copy the sentence...">
+        <div class="feedback" id="fb-d3" style="display:none"></div>
+      </div>
+
+      <div class="section-score" id="score2">Answer the questions above 👆</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIP 4 -->
+<div class="tab-panel" id="panel3">
+  <div class="chunk">
+    <div class="tip-card" style="background:var(--c4l);border-bottom:2px dashed #bbdefb">
+      <div class="tip-num" style="background:var(--c4)">4</div>
+      <p><strong>Create family traditions.</strong> For example, you can have a game evening once a week or a movie night with popcorn that one of you prepares in the microwave.</p>
+      <p>You'll remember your family traditions all your life.</p>
+    </div>
+    <div class="chunk-questions">
+      <h4>📝 Questions – Tip 4</h4>
+
+      <div class="q-item">
+        <label><span class="q-num">1.</span> Complete the sentence:<br>Having a game evening once a week is an example of creating ...</label>
+        <input type="text" class="answer-input" data-id="c3" data-ans="family traditions" placeholder="Complete the sentence...">
+        <div class="feedback" id="fb-c3" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">2a.</span> Family traditions create memories. <strong>TRUE / FALSE</strong></label>
+        <div class="options-list">
+          <label class="option-label"><input type="radio" name="c4" value="TRUE"> TRUE</label>
+          <label class="option-label"><input type="radio" name="c4" value="FALSE"> FALSE</label>
+        </div>
+        <div class="feedback" id="fb-c4" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">2b.</span> Copy the sentence that proves your answer:</label>
+        <input type="text" class="answer-input" data-id="c4b" data-ans="You'll remember your family traditions all your life." placeholder="Copy the proof sentence from Tip 4...">
+        <div class="feedback" id="fb-c4b" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">3.</span> Complete the sentence:<br>
+          You can use the (1)&nbsp;<input type="text" class="answer-input" data-id="d4a" data-ans="microwave" placeholder="..." style="display:inline-block;width:130px;margin:0 5px;vertical-align:middle">&nbsp;to (2)&nbsp;<input type="text" class="answer-input" data-id="d4b" data-ans="prepare" placeholder="..." style="display:inline-block;width:110px;margin:0 5px;vertical-align:middle">&nbsp;popcorn at home.
+        </label>
+        <div class="feedback" id="fb-d4" style="display:none"></div>
+      </div>
+
+      <div class="section-score" id="score3">Answer the questions above 👆</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIP 5 -->
+<div class="tab-panel" id="panel4">
+  <div class="chunk">
+    <div class="tip-card" style="background:var(--c5l);border-bottom:2px dashed #e1bee7">
+      <div class="tip-num" style="background:var(--c5)">5</div>
+      <p>It sometimes happens that you are angry with one of your family members, right? Tell them how you feel and <strong>make up</strong> with them. After all, they are your family!</p>
+      <p>Accept each person for what he or she is. Try to see the good in everyone. This way, you'll always <strong>get along</strong> with the people around you.</p>
+    </div>
+    <div class="chunk-questions">
+      <h4>📝 Questions – Tip 5</h4>
+
+      <div class="q-item">
+        <label><span class="q-num">1a.</span> Tip 5 tells us what to do when we are angry with a family member. <strong>TRUE / FALSE</strong></label>
+        <div class="options-list">
+          <label class="option-label"><input type="radio" name="c5" value="TRUE"> TRUE</label>
+          <label class="option-label"><input type="radio" name="c5" value="FALSE"> FALSE</label>
+        </div>
+        <div class="feedback" id="fb-c5" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">1b.</span> Copy the sentence that proves your answer:</label>
+        <input type="text" class="answer-input" data-id="c5b" data-ans="Tell them how you feel and make up with them." placeholder="Copy the proof sentence from Tip 5...">
+        <div class="feedback" id="fb-c5b" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">2.</span> Find THREE words in Tip 5 which mean: <em>יקרה/קורה לפעמים.</em></label>
+        <input type="text" class="answer-input" data-id="d5" data-ans="It sometimes happens" placeholder="Write 3 words from Tip 5...">
+        <div class="feedback" id="fb-d5" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">3.</span> Find a sentence in Tip 5 which means: <em>קבל/י כל אדם כמו שהוא/היא.</em></label>
+        <input type="text" class="answer-input" data-id="d6" data-ans="Accept each person for what he or she is." placeholder="Copy the sentence from Tip 5...">
+        <div class="feedback" id="fb-d6" style="display:none"></div>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">⭐ 4.</span> Find TWO sentences in Tip 5 that tell us how to get along with the people around us.</label>
+        <textarea class="answer-input" rows="3" data-id="c6" placeholder="Write both sentences from Tip 5..." style="resize:vertical"></textarea>
+      </div>
+
+      <div class="q-item">
+        <label><span class="q-num">💬 5.</span> Do you find it hard to make up with family members? Why / Why not?</label>
+        <textarea class="answer-input" rows="2" data-id="oty3" placeholder="Write your own answer..." style="resize:vertical"></textarea>
+      </div>
+
+      <div class="section-score" id="score4">Answer the questions above 👆</div>
+    </div>
+  </div>
+</div>
+
+<!-- WORDS -->
+<div class="tab-panel" id="panel5">
+  <div class="chunk">
+    <div class="tip-card" style="background:var(--cwl);padding-left:18px;border-bottom:2px dashed #d7ccc8">
+      <p style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;color:var(--cw)">🔤 Work with Words</p>
+      <p style="margin-top:6px;font-size:0.95rem">Complete the sentences. Use the word bank.</p>
+    </div>
+    <div class="chunk-questions">
+      <div class="word-bank-box">
+        <strong>Word Bank:</strong>
+        <div class="chips">
+          <span class="chip">aunts</span><span class="chip">brother</span><span class="chip">cousins</span>
+          <span class="chip">daughter</span><span class="chip">grandfather</span><span class="chip">grandchild</span>
+          <span class="chip">son / daughter</span><span class="chip">uncle</span>
+        </div>
+      </div>
+
+      <div class="q-item"><label><span class="q-num">1.</span> My mother's father is my&nbsp;<select class="fill-select" data-id="w1" data-ans="grandfather"><option value="">– choose –</option><option>grandfather</option><option>uncle</option><option>brother</option><option>cousin</option></select></label><div class="feedback" id="fb-w1" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">2.</span> My father's brother is my&nbsp;<select class="fill-select" data-id="w2" data-ans="uncle"><option value="">– choose –</option><option>uncle</option><option>grandfather</option><option>brother</option><option>cousin</option></select></label><div class="feedback" id="fb-w2" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">3.</span> My parents' son is my&nbsp;<select class="fill-select" data-id="w3" data-ans="brother"><option value="">– choose –</option><option>brother</option><option>uncle</option><option>grandfather</option><option>cousin</option></select></label><div class="feedback" id="fb-w3" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">4.</span> My parents'&nbsp;<select class="fill-select" data-id="w4" data-ans="daughter" style="min-width:110px"><option value="">– choose –</option><option>daughter</option><option>son</option><option>niece</option><option>granddaughter</option></select>&nbsp;is my sister.</label><div class="feedback" id="fb-w4" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">5.</span> My mother's sisters are my&nbsp;<select class="fill-select" data-id="w5" data-ans="aunts"><option value="">– choose –</option><option>aunts</option><option>cousins</option><option>grandmothers</option><option>nieces</option></select></label><div class="feedback" id="fb-w5" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">6.</span> My uncle's sons / daughters are my&nbsp;<select class="fill-select" data-id="w6" data-ans="cousins"><option value="">– choose –</option><option>cousins</option><option>aunts</option><option>nephews</option><option>siblings</option></select></label><div class="feedback" id="fb-w6" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">7.</span> I am my parents'&nbsp;<select class="fill-select" data-id="w7" data-ans="son / daughter"><option value="">– choose –</option><option>son / daughter</option><option>grandchild</option><option>cousin</option><option>niece / nephew</option></select></label><div class="feedback" id="fb-w7" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">8.</span> I am my grandparents'&nbsp;<select class="fill-select" data-id="w8" data-ans="grandchild"><option value="">– choose –</option><option>grandchild</option><option>son / daughter</option><option>nephew</option><option>cousin</option></select></label><div class="feedback" id="fb-w8" style="display:none"></div></div>
+
+      <div class="section-score" id="score5">Answer the questions above 👆</div>
+    </div>
+  </div>
+</div>
+
+<!-- WRITING -->
+<div class="tab-panel" id="panel6">
+  <div class="chunk">
+    <div class="tip-card" style="background:#e8eaf6;padding-left:18px;border-bottom:2px dashed #c5cae9">
+      <p style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;color:#3949ab">✏️ Write commands or requests – כתבו פקודות או בקשות</p>
+    </div>
+    <div class="chunk-questions">
+      <div class="example-box">
+        <strong>✅ Example:</strong> You want someone to turn on the light. You make a polite request:<br>
+        <em>"Turn on the light, please." / "Please turn on the light."</em>
+      </div>
+
+      <div class="q-item"><label><span class="q-num">2.</span> An old man asks you to help him with his shopping bags. He makes a very polite request:</label><input type="text" class="answer-input" data-id="e2" data-ans="Could you please help me with my shopping bags?" placeholder='"...'><div class="feedback" id="fb-e2" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">3.</span> The teacher commands you to close your books. He/She says:</label><input type="text" class="answer-input" data-id="e3" data-ans="Close your books!" placeholder='"...'><div class="feedback" id="fb-e3" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">4.</span> A parent asks you to buy bread and milk on your way home. He/She makes a polite request:</label><input type="text" class="answer-input" data-id="e4" data-ans="Please buy bread and milk on your way home." placeholder='"...'><div class="feedback" id="fb-e4" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">5.</span> Mother commands her little boy not to touch anything in the shop. She says:</label><input type="text" class="answer-input" data-id="e5" data-ans="Don't touch anything!" placeholder='"...'><div class="feedback" id="fb-e5" style="display:none"></div></div>
+      <div class="q-item"><label><span class="q-num">6.</span> You want your parents to give you some money. You make a very polite request:</label><input type="text" class="answer-input" data-id="e6" data-ans="Could you please give me some money?" placeholder='"...'><div class="feedback" id="fb-e6" style="display:none"></div></div>
+
+      <div class="section-score" id="score6">Writing exercises – your work is saved automatically ✏️</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="resultsModal">
+  <div class="modal">
+    <div class="moji" id="mEmoji">🌟</div>
+    <h2 id="mTitle">Your Results</h2>
+    <div class="total-num" id="mTotal">0/0</div>
+    <div class="breakdown" id="mBreakdown"></div>
+    <p id="mMsg"></p>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'letsconnect_v3';
+
+function switchTab(i) {
+  document.querySelectorAll('.tab-panel').forEach((p,j) => p.classList.toggle('active', j===i));
+  document.querySelectorAll('.tab-btn').forEach((b,j) => b.classList.toggle('active', j===i));
+}
+
+function saveAll() {
+  const d = {};
+  document.querySelectorAll('[data-id]').forEach(el => {
+    if (['INPUT','TEXTAREA','SELECT'].includes(el.tagName)) d[el.dataset.id] = el.value;
+  });
+  ['c4','c5'].forEach(n => { const r = document.querySelector(`input[name="${n}"]:checked`); if (r) d['r_'+n] = r.value; });
+  document.querySelectorAll('.choose-btn.selected').forEach(b => { d['ch_'+b.dataset.group] = b.dataset.val; });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+}
+
+function loadAll() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  const d = JSON.parse(raw);
+  document.querySelectorAll('[data-id]').forEach(el => { if (d[el.dataset.id] !== undefined) el.value = d[el.dataset.id]; });
+  ['c4','c5'].forEach(n => { if (d['r_'+n]) { const r = document.querySelector(`input[name="${n}"][value="${d['r_'+n]}"]`); if (r) r.checked = true; } });
+  document.querySelectorAll('.choose-btn').forEach(b => { if (d['ch_'+b.dataset.group] === b.dataset.val) b.classList.add('selected'); });
+}
+
+document.addEventListener('input', saveAll);
+document.addEventListener('change', saveAll);
+
+function pick(btn) {
+  document.querySelectorAll(`.choose-btn[data-group="${btn.dataset.group}"]`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  saveAll();
+}
+
+function norm(s) { return (s||'').trim().toLowerCase().replace(/[.!?,'"\u2019\u201c\u201d]/g,'').replace(/\s+/g,' '); }
+
+function gradeInput(id) {
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if (!el || !el.dataset.ans) return null;
+  if (!el.value.trim()) return null;
+  const ok = norm(el.value) === norm(el.dataset.ans);
+  el.className = 'answer-input ' + (ok ? 'correct' : 'wrong');
+  const fb = document.getElementById('fb-'+id);
+  if (fb) { fb.style.display='inline-block'; fb.className='feedback '+(ok?'correct':'wrong'); fb.textContent = ok ? '✓ Correct!' : `✗ Expected: "${el.dataset.ans}"`; }
+  return ok;
+}
+
+function gradeSelect(id) {
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if (!el || !el.value) return null;
+  const ok = norm(el.value) === norm(el.dataset.ans);
+  el.className = 'fill-select ' + (ok ? 'correct' : 'wrong');
+  const fb = document.getElementById('fb-'+id);
+  if (fb) { fb.style.display='inline-block'; fb.className='feedback '+(ok?'correct':'wrong'); fb.textContent = ok ? '✓ Correct!' : `✗ "${el.dataset.ans}"`; }
+  return ok;
+}
+
+function gradeRadio(name, ans) {
+  const checked = document.querySelector(`input[name="${name}"]:checked`);
+  if (!checked) return null;
+  const ok = norm(checked.value) === norm(ans);
+  document.querySelectorAll(`label:has(input[name="${name}"])`).forEach(lbl => {
+    lbl.className = 'option-label';
+    if (lbl.querySelector('input').value === ans) lbl.classList.add('show-ans');
+    if (checked.value === lbl.querySelector('input').value && !ok) lbl.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb-'+name);
+  if (fb) { fb.style.display='inline-block'; fb.className='feedback '+(ok?'correct':'wrong'); fb.textContent = ok ? '✓ Correct!' : '✗ The answer is TRUE'; }
+  return ok;
+}
+
+function gradeChoose(group, ans) {
+  const sel = document.querySelector(`.choose-btn[data-group="${group}"].selected`);
+  if (!sel) return null;
+  const ok = norm(sel.dataset.val) === norm(ans);
+  document.querySelectorAll(`.choose-btn[data-group="${group}"]`).forEach(b => {
+    b.classList.remove('selected','correct','wrong','show-ans');
+    if (norm(b.dataset.val) === norm(ans)) b.classList.add('show-ans');
+    if (b === sel && !ok) b.classList.add('wrong');
+    if (b === sel && ok) b.classList.add('correct');
+  });
+  return ok;
+}
+
+function checkAll() {
+  const t = [0,0,0,0,0,0,0];
+  const p = [0,0,0,0,0,0,0];
+
+  function sc(tab, ok) { if (ok !== null) { p[tab]++; if (ok) t[tab]++; } }
+
+  // Tip 1
+  sc(0, gradeInput('a1')); sc(0, gradeInput('a2'));
+  sc(0, gradeChoose('b1','Show')); sc(0, gradeChoose('b1b','that'));
+  sc(0, gradeChoose('b2','each')); sc(0, gradeChoose('b2b','why'));
+
+  // Tip 2
+  sc(1, gradeInput('a3')); sc(1, gradeInput('a4'));
+  sc(1, gradeChoose('b3','Do')); sc(1, gradeChoose('b4','go'));
+
+  // Tip 3
+  sc(2, gradeInput('d1')); sc(2, gradeInput('d2')); sc(2, gradeInput('d2b')); sc(2, gradeInput('d3'));
+
+  // Tip 4
+  sc(3, gradeInput('c3'));
+  sc(3, gradeRadio('c4','TRUE'));
+  sc(3, gradeInput('c4b'));
+  sc(3, gradeInput('d4a')); sc(3, gradeInput('d4b'));
+
+  // Tip 5
+  sc(4, gradeRadio('c5','TRUE'));
+  sc(4, gradeInput('c5b'));
+  sc(4, gradeInput('d5')); sc(4, gradeInput('d6'));
+
+  // Words
+  ['w1','w2','w3','w4','w5','w6','w7','w8'].forEach(id => sc(5, gradeSelect(id)));
+
+  const names  = ['💬 Tip 1','🏃 Tip 2','🍽️ Tip 3','🎮 Tip 4','💜 Tip 5','🔤 Words'];
+  const colors = ['#e07b39','#43a047','#e91e63','#1976d2','#9c27b0','#795548'];
+  const bgs    = ['#fff3e0','#e8f5e9','#fce4ec','#e3f2fd','#f3e5f5','#efebe9'];
+
+  for (let i = 0; i < 6; i++) {
+    const sc2 = document.getElementById('score'+i);
+    const ts  = document.getElementById('ts'+i);
+    if (sc2) { sc2.innerHTML = `📊 Score: <span class="big">${t[i]}/${p[i]}</span>`; sc2.className = 'section-score graded'; }
+    if (ts)  { ts.textContent = p[i] > 0 ? `${t[i]}/${p[i]}` : '–'; }
+  }
+
+  const total = t.slice(0,6).reduce((a,b)=>a+b,0);
+  const poss  = p.slice(0,6).reduce((a,b)=>a+b,0);
+  document.getElementById('totalScore').textContent = `${total}/${poss}`;
+
+  const pct = poss ? Math.round(total/poss*100) : 0;
+  let emoji='📚', msg='Keep trying! Read each tip carefully.';
+  if (pct>=90){emoji='🏆';msg='Excellent work! Amazing job!';}
+  else if (pct>=75){emoji='😊';msg='Great job! Keep it up!';}
+  else if (pct>=60){emoji='👍';msg='Good effort! Review the tips again.';}
+
+  document.getElementById('mEmoji').textContent = emoji;
+  document.getElementById('mTotal').textContent = `${total}/${poss}`;
+  document.getElementById('mMsg').textContent = msg;
+  document.getElementById('mBreakdown').innerHTML = names.map((n,i) =>
+    p[i] > 0 ? `<div class="b-row" style="background:${bgs[i]}"><span>${n}</span><span style="color:${colors[i]}">${t[i]}/${p[i]}</span></div>` : ''
+  ).join('');
+
+  document.getElementById('resultsModal').classList.add('show');
+  saveAll();
+}
+
+function closeModal() { document.getElementById('resultsModal').classList.remove('show'); }
+
+function resetAll() {
+  if (!confirm('Reset all your answers? This cannot be undone.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+window.addEventListener('DOMContentLoaded', loadAll);
+</script>
+</body>
+</html>

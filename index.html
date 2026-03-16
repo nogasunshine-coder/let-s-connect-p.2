@@ -150,7 +150,7 @@ body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(-
   <button class="tab-btn" style="--tc:#1976d2" onclick="switchTab(3)">🎮 Tip 4 <span class="tab-score" id="ts3">–</span></button>
   <button class="tab-btn" style="--tc:#9c27b0" onclick="switchTab(4)">💜 Tip 5 <span class="tab-score" id="ts4">–</span></button>
   <button class="tab-btn" style="--tc:#795548" onclick="switchTab(5)">🔤 Words <span class="tab-score" id="ts5">–</span></button>
-  <button class="tab-btn" style="--tc:#546e7a" onclick="switchTab(6)">✏️ Writing <span class="tab-score" id="ts6">–</span></button>
+
 </div>
 
 <div class="content">
@@ -444,28 +444,7 @@ body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(-
   </div>
 </div>
 
-<!-- WRITING -->
-<div class="tab-panel" id="panel6">
-  <div class="chunk">
-    <div class="tip-card" style="background:#e8eaf6;padding-left:18px;border-bottom:2px dashed #c5cae9">
-      <p style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;color:#3949ab">✏️ Write commands or requests – כתבו פקודות או בקשות</p>
-    </div>
-    <div class="chunk-questions">
-      <div class="example-box">
-        <strong>✅ Example:</strong> You want someone to turn on the light. You make a polite request:<br>
-        <em>"Turn on the light, please." / "Please turn on the light."</em>
-      </div>
 
-      <div class="q-item"><label><span class="q-num">2.</span> An old man asks you to help him with his shopping bags. He makes a very polite request:</label><input type="text" class="answer-input" data-id="e2" data-ans="Could you please help me with my shopping bags?" placeholder='"...'><div class="feedback" id="fb-e2" style="display:none"></div></div>
-      <div class="q-item"><label><span class="q-num">3.</span> The teacher commands you to close your books. He/She says:</label><input type="text" class="answer-input" data-id="e3" data-ans="Close your books!" placeholder='"...'><div class="feedback" id="fb-e3" style="display:none"></div></div>
-      <div class="q-item"><label><span class="q-num">4.</span> A parent asks you to buy bread and milk on your way home. He/She makes a polite request:</label><input type="text" class="answer-input" data-id="e4" data-ans="Please buy bread and milk on your way home." placeholder='"...'><div class="feedback" id="fb-e4" style="display:none"></div></div>
-      <div class="q-item"><label><span class="q-num">5.</span> Mother commands her little boy not to touch anything in the shop. She says:</label><input type="text" class="answer-input" data-id="e5" data-ans="Don't touch anything!" placeholder='"...'><div class="feedback" id="fb-e5" style="display:none"></div></div>
-      <div class="q-item"><label><span class="q-num">6.</span> You want your parents to give you some money. You make a very polite request:</label><input type="text" class="answer-input" data-id="e6" data-ans="Could you please give me some money?" placeholder='"...'><div class="feedback" id="fb-e6" style="display:none"></div></div>
-
-      <div class="section-score" id="score6">Writing exercises – your work is saved automatically ✏️</div>
-    </div>
-  </div>
-</div>
 
 </div><!-- /content -->
 
@@ -603,7 +582,7 @@ function checkAll() {
   const colors = ['#e07b39','#43a047','#e91e63','#1976d2','#9c27b0','#795548'];
   const bgs    = ['#fff3e0','#e8f5e9','#fce4ec','#e3f2fd','#f3e5f5','#efebe9'];
 
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 6; i++) {  
     const sc2 = document.getElementById('score'+i);
     const ts  = document.getElementById('ts'+i);
     if (sc2) { sc2.innerHTML = `📊 Score: <span class="big">${t[i]}/${p[i]}</span>`; sc2.className = 'section-score graded'; }
